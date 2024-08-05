@@ -35,7 +35,7 @@ export const App = () => {
         });
 
         if (chatCompletion.choices[0]?.message?.content) {
-            setMessages([...messages, newMessage, {role: "assistant", content: chatCompletion.choices[0].message.content}]);
+            setMessages(messages => [...messages, {role: "assistant", content: chatCompletion.choices[0].message.content!}]);
         }
 
         setIsLoading(false);
