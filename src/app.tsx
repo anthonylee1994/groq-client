@@ -56,7 +56,20 @@ export const App = () => {
                     ))}
                 </Box>
             </Box>
-            <Flex p={{base: 2, sm: 4}} py={{base: 2, sm: 4}} maxW="2xl" w="full" mx="auto" position="fixed" bottom={0} left={0} right={0} bg="white" borderTopWidth="1px">
+            <Flex
+                p={{base: 2, sm: 4}}
+                py={{base: 2, sm: 4}}
+                maxW="2xl"
+                w="full"
+                mx="auto"
+                position="fixed"
+                bottom={0}
+                left={0}
+                right={0}
+                bg="white"
+                borderTopWidth="1px"
+                pb="env(safe-area-inset-bottom)"
+            >
                 <form style={{display: "flex", width: "100%"}} onSubmit={handleSubmit}>
                     <InputGroup size="md">
                         <Input pr="4.5rem" placeholder="Ask for question" value={inputValue} onChange={event => setInputValue(event.target.value)} />
