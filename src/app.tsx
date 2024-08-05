@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import Groq from "groq-sdk";
-import {Box, Button, Flex, Input, InputGroup, InputRightElement, Textarea} from "@chakra-ui/react";
+import {Box, Button, Flex, InputGroup, InputRightElement, Textarea} from "@chakra-ui/react";
 import {MarkdownPreview} from "./components/MarkdownPreview";
 
 interface Message {
