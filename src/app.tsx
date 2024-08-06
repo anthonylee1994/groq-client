@@ -19,23 +19,15 @@ export const App = () => {
     const [inputValue, setInputValue] = useState("");
     const [model, setModel] = useState(localStorage.getItem("model") || "llama3-70b-8192");
 
-    const handleSubmit = async (event: React.FormEvent) => {
-        event.preventDefault();
-        if (inputValue.trim() === "") return;
+    const createNewMessage = (content: string): Message => ({
+        role: "user",
+        content,
+    });
 
-        setIsLoading(true);
-
-        const newMessage: Message = {
-            role: "user",
-            content: inputValue,
-        };
-
-        setMessages(messages => [...messages, newMessage]);
-        setInputValue("");
-
+    const fetchChatCompletion = async (model: string, messages: Message[]) => {
         const chatCompletion = await groq.chat.completions.create({
             model,
-            messages: [...messages, newMessage],
+            messages,
             stream: true,
         });
 
@@ -50,6 +42,19 @@ export const App = () => {
                 return [...messages];
             });
         }
+    };
+
+    const handleSubmit = async (event: React.FormEvent) => {
+        event.preventDefault();
+        if (inputValue.trim() === "") return;
+
+        setIsLoading(true);
+
+        const newMessage = createNewMessage(inputValue);
+        setMessages(messages => [...messages, newMessage]);
+        setInputValue("");
+
+        await fetchChatCompletion(model, [...messages, newMessage]);
 
         setIsLoading(false);
     };
