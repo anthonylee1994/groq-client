@@ -32,10 +32,19 @@ export const App = () => {
         const chatCompletion = await groq.chat.completions.create({
             messages: [...messages, newMessage],
             model: "llama3-70b-8192",
+            stream: true,
         });
 
-        if (chatCompletion.choices[0]?.message?.content) {
-            setMessages(messages => [...messages, {role: "assistant", content: chatCompletion.choices[0].message.content!}]);
+        for await (const chunk of chatCompletion) {
+            setMessages(messages => {
+                const lastMessage = messages[messages.length - 1];
+                if (lastMessage.role === "assistant") {
+                    lastMessage.content += chunk.choices[0]?.delta?.content || "";
+                } else {
+                    return [...messages, {role: "assistant", content: chunk.choices[0]?.delta?.content || ""}];
+                }
+                return [...messages];
+            });
         }
 
         setIsLoading(false);
