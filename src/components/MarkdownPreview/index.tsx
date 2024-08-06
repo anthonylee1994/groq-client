@@ -37,11 +37,13 @@ export const MarkdownPreview = ({markdown}: Props) => {
                                     borderTopLeftRadius: 0,
                                     borderTopRightRadius: 0,
                                     fontSize: 13,
+                                    whiteSpace: "break-spaces",
                                 }}
                                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                                 // @ts-expect-error
                                 style={dracula}
                                 PreTag="div"
+                                wrapLongLines
                                 language={match?.[1] || "text"}
                                 {...props}
                             >
