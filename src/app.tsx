@@ -1,24 +1,23 @@
 import React, {useState} from "react";
-import Groq from "groq-sdk";
 import {Flex} from "@chakra-ui/react";
 import {MarkdownPreview} from "./components/MarkdownPreview";
 import {AppBar} from "./components/AppBar.tsx";
 import {MessageList} from "./components/MessageList.tsx";
 import {Message} from "./components/Message.tsx";
 import {MessageInput} from "./components/MessageInput.tsx";
+import {groq} from "./utils/groq.ts";
 
 interface Message {
     role: "user" | "assistant";
     content: string;
 }
 
-const groq = new Groq({apiKey: import.meta.env.VITE_GROQ_API_KEY, dangerouslyAllowBrowser: true});
-
 export const App = () => {
     const inputRef = React.useRef<HTMLTextAreaElement>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [messages, setMessages] = useState<Message[]>(localStorage.getItem("messages") ? JSON.parse(localStorage.getItem("messages")!) : []);
     const [inputValue, setInputValue] = useState("");
+    const [model, setModel] = useState(localStorage.getItem("model") || "llama3-70b-8192");
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
@@ -35,8 +34,8 @@ export const App = () => {
         setInputValue("");
 
         const chatCompletion = await groq.chat.completions.create({
+            model,
             messages: [...messages, newMessage],
-            model: "llama3-70b-8192",
             stream: true,
         });
 
@@ -60,9 +59,13 @@ export const App = () => {
         window.scrollTo(0, document.body.scrollHeight);
     }, [messages]);
 
+    React.useEffect(() => {
+        localStorage.setItem("model", model);
+    }, [model]);
+
     return (
         <Flex flexDir="column">
-            <AppBar onClear={() => setMessages([])} onRefresh={() => window.location.reload()} />
+            <AppBar onClear={() => setMessages([])} model={model} setModel={setModel} />
             <MessageList>
                 {messages.map((message, index) => (
                     <Message key={index} role={message.role}>
