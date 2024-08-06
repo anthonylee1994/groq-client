@@ -28,9 +28,9 @@ export const MarkdownPreview = ({markdown}: Props) => {
                         return <Latex displayMode>{`$${children}$`}</Latex>;
                     }
 
-                    const count = String(children).split("\n").length;
+                    const lineCount = String(children).split("\n").length;
 
-                    return count > 1 ? (
+                    return lineCount > 1 ? (
                         <CodeBlock language={match?.[1] || "text"} message={String(children)}>
                             <SyntaxHighlighter
                                 customStyle={{
