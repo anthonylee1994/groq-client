@@ -1,8 +1,11 @@
 import React, {useState} from "react";
 import Groq from "groq-sdk";
-import {Box, Button, Flex, IconButton, InputGroup, InputRightElement, Text, Textarea} from "@chakra-ui/react";
+import {Flex} from "@chakra-ui/react";
 import {MarkdownPreview} from "./components/MarkdownPreview";
-import {DeleteIcon, RepeatIcon} from "@chakra-ui/icons";
+import {AppBar} from "./components/AppBar.tsx";
+import {MessageList} from "./components/MessageList.tsx";
+import {Message} from "./components/Message.tsx";
+import {MessageInput} from "./components/MessageInput.tsx";
 
 interface Message {
     role: "user" | "assistant";
@@ -59,63 +62,15 @@ export const App = () => {
 
     return (
         <Flex flexDir="column">
-            <Box p={2} bg="gray.300" position="fixed" w="full">
-                <Flex maxW="2xl" mx="auto" alignItems="center" justifyContent="space-between">
-                    <IconButton aria-label="delete" variant="ghost" colorScheme="gray" onClick={() => setMessages([])} icon={<DeleteIcon />} />
-                    <Text textAlign="center" ml={2} fontSize="xl" fontWeight="bold">
-                        Groq
-                    </Text>
-                    <IconButton aria-label="refresh" variant="ghost" colorScheme="gray" onClick={() => window.location.reload()} icon={<RepeatIcon />} />
-                </Flex>
-            </Box>
-            <Box flex={1} p={4} overflowY="auto" pb="calc(env(safe-area-inset-bottom) + 120px)" pt="calc(env(safe-area-inset-top) + 80px)">
-                <Box maxW="2xl" mx="auto">
-                    {messages.map((message, index) => (
-                        <Box key={index} mb={2} bg="gray.200" p={4} borderRadius="md" bgColor={message.role === "user" ? "blue.100" : "gray.100"} overflow="auto">
-                            <MarkdownPreview markdown={message.content} />
-                        </Box>
-                    ))}
-                </Box>
-            </Box>
-            <Flex
-                p={{base: 2, sm: 4}}
-                py={{base: 2, sm: 4}}
-                maxW="2xl"
-                w="full"
-                mx="auto"
-                position="fixed"
-                bottom={0}
-                left={0}
-                right={0}
-                bg="white"
-                borderTopWidth="1px"
-                pb="env(safe-area-inset-bottom)"
-            >
-                <form style={{display: "flex", width: "100%"}} onSubmit={handleSubmit}>
-                    <InputGroup size="md">
-                        <Textarea
-                            onKeyDown={e => {
-                                if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
-                                    handleSubmit(e as never);
-                                }
-                            }}
-                            ref={inputRef}
-                            flex={1}
-                            resize="none"
-                            mb={{base: 2, sm: 0}}
-                            pr="4.5rem"
-                            placeholder="Ask for question"
-                            value={inputValue}
-                            onChange={event => setInputValue(event.target.value)}
-                        />
-                        <InputRightElement width="4.5rem">
-                            <Button h="1.75rem" size="sm" type="submit" isLoading={isLoading}>
-                                Send
-                            </Button>
-                        </InputRightElement>
-                    </InputGroup>
-                </form>
-            </Flex>
+            <AppBar onClear={() => setMessages([])} onRefresh={() => window.location.reload()} />
+            <MessageList>
+                {messages.map((message, index) => (
+                    <Message key={index} role={message.role}>
+                        <MarkdownPreview markdown={message.content} />
+                    </Message>
+                ))}
+            </MessageList>
+            <MessageInput inputRef={inputRef} isLoading={isLoading} inputValue={inputValue} setInputValue={setInputValue} handleSubmit={handleSubmit} />
         </Flex>
     );
 };
