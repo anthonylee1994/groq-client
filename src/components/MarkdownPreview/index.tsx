@@ -28,8 +28,10 @@ export const MarkdownPreview = ({markdown}: Props) => {
                         return <Latex displayMode>{`$${children}$`}</Latex>;
                     }
 
-                    return match ? (
-                        <CodeBlock language={match[1]} message={String(children)}>
+                    const count = String(children).split("\n").length;
+
+                    return count > 1 ? (
+                        <CodeBlock language={match?.[1] || "text"} message={String(children)}>
                             <SyntaxHighlighter
                                 customStyle={{
                                     borderTopLeftRadius: 0,
@@ -40,7 +42,7 @@ export const MarkdownPreview = ({markdown}: Props) => {
                                 // @ts-expect-error
                                 style={dracula}
                                 PreTag="div"
-                                language={match[1]}
+                                language={match?.[1] || "text"}
                                 {...props}
                             >
                                 {String(children).replace(/\n$/, "")}
