@@ -47,7 +47,7 @@ export const App = () => {
 
     return (
         <Flex flexDir="column">
-            <Box flex={1} p={4} overflowY="auto" pb={120}>
+            <Box flex={1} p={4} overflowY="auto" pb="calc(env(safe-area-inset-bottom) + 120px)">
                 <Box maxW="2xl" mx="auto">
                     {messages.map((message, index) => (
                         <Box key={index} mb={2} bg="gray.200" p={4} borderRadius="md" bgColor={message.role === "user" ? "blue.100" : "gray.100"} overflow="auto">
