@@ -33,7 +33,7 @@ export const App = () => {
 
         const chatCompletion = await groq.chat.completions.create({
             messages: [...messages, newMessage],
-            model: "llama3-70b-8192",
+            model: "llama-3.1-70b-versatile",
             stream: true,
         });
 
