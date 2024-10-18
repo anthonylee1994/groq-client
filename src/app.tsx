@@ -5,7 +5,7 @@ import {AppBar} from "./components/AppBar.tsx";
 import {MessageList} from "./components/MessageList.tsx";
 import {Message} from "./components/Message.tsx";
 import {MessageInput} from "./components/MessageInput.tsx";
-import {groq} from "./utils/groq.ts";
+import {mistral} from "./utils/mistral.ts";
 
 interface Message {
     role: "user" | "assistant";
@@ -17,7 +17,7 @@ export const App = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [messages, setMessages] = useState<Message[]>(localStorage.getItem("messages") ? JSON.parse(localStorage.getItem("messages")!) : []);
     const [inputValue, setInputValue] = useState("");
-    const [model, setModel] = useState(localStorage.getItem("model") || "llama3-70b-8192");
+    const [model, setModel] = useState(localStorage.getItem("model") || "mistral-large-latest");
 
     const createNewMessage = (content: string): Message => ({
         role: "user",
@@ -25,7 +25,7 @@ export const App = () => {
     });
 
     const fetchChatCompletion = async (model: string, messages: Message[]) => {
-        const chatCompletion = await groq.chat.completions.create({
+        const chatCompletion = await mistral.chat.stream({
             model,
             messages,
             stream: true,
@@ -35,9 +35,9 @@ export const App = () => {
             setMessages(messages => {
                 const lastMessage = messages[messages.length - 1];
                 if (lastMessage.role === "assistant") {
-                    lastMessage.content += chunk.choices[0]?.delta?.content || "";
+                    lastMessage.content += chunk.data.choices[0]?.delta?.content || "";
                 } else {
-                    return [...messages, {role: "assistant", content: chunk.choices[0]?.delta?.content || ""}];
+                    return [...messages, {role: "assistant", content: chunk.data.choices[0]?.delta?.content || ""}];
                 }
                 return [...messages];
             });

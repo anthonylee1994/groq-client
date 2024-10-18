@@ -1,9 +1,8 @@
 import {Box, Flex, IconButton, Select} from "@chakra-ui/react";
 import {DeleteIcon} from "@chakra-ui/icons";
 import React from "react";
-import {groq} from "../utils/groq.ts";
-import Groq from "groq-sdk";
-import Model = Groq.Model;
+import {mistral} from "../utils/mistral.ts";
+import {ModelList} from "@mistralai/mistralai/models/components/modellist";
 
 interface Props {
     onClear: () => void;
@@ -12,10 +11,10 @@ interface Props {
 }
 
 export const AppBar = ({onClear, model, setModel}: Props) => {
-    const [models, setModels] = React.useState<Model[]>([]);
+    const [models, setModels] = React.useState<ModelList["data"]>([]);
 
     React.useEffect(() => {
-        groq.models.list().then(({data}) => setModels(data));
+        mistral.models.list().then(({data}) => setModels(data));
     }, []);
 
     return (
@@ -23,13 +22,11 @@ export const AppBar = ({onClear, model, setModel}: Props) => {
             <Flex maxW="2xl" mx="auto" alignItems="center" justifyContent="space-between">
                 <IconButton mr={2} aria-label="delete" variant="ghost" colorScheme="gray" onClick={onClear} icon={<DeleteIcon />} />
                 <Select w="full" variant="filled" placeholder="Select model" value={model} onChange={e => setModel(e.target.value)}>
-                    {models
-                        .filter(m => !["whisper-large-v3"].includes(m.id))
-                        .map(model => (
-                            <option key={model.id} value={model.id}>
-                                {model.id}
-                            </option>
-                        ))}
+                    {models?.map(model => (
+                        <option key={model.id} value={model.id}>
+                            {model.id}
+                        </option>
+                    ))}
                 </Select>
             </Flex>
         </Box>
