@@ -25,7 +25,7 @@ export const AppBar = ({onClear, model, setModel}: Props) => {
                     <FaTrash size={16} />
                 </IconButton>
                 <NativeSelectRoot w="full" variant="subtle" colorPalette="gray">
-                    <NativeSelectField placeholder="Select model" value={model} onChange={e => setModel(e.target.value)}>
+                    <NativeSelectField value={model} onChange={e => setModel(e.target.value)}>
                         {models?.map(model => (
                             <option key={model.id} value={model.id}>
                                 {model.id}
