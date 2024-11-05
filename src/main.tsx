@@ -1,10 +1,10 @@
 import ReactDOM from "react-dom/client";
 import {App} from "./app.tsx";
 import "./index.css";
-import {ChakraProvider} from "@chakra-ui/react";
+import {Provider} from "./components/ui/provider.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-    <ChakraProvider>
+    <Provider>
         <App />
-    </ChakraProvider>
+    </Provider>
 );
